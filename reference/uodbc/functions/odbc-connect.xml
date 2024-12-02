@@ -11,8 +11,8 @@
   <methodsynopsis>
    <type class="union"><type>resource</type><type>false</type></type><methodname>odbc_connect</methodname>
    <methodparam><type>string</type><parameter>dsn</parameter></methodparam>
-   <methodparam><type>string</type><parameter>user</parameter></methodparam>
-   <methodparam><type>string</type><parameter>password</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>user</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>password</parameter><initializer>&null;</initializer></methodparam>
    <methodparam choice="opt"><type>int</type><parameter>cursor_option</parameter><initializer><constant>SQL_CUR_USE_DRIVER</constant></initializer></methodparam>
   </methodsynopsis>
   <simpara>
@@ -49,6 +49,9 @@
      <listitem>
       <para>
        The username.
+       This parameter is ignored if <parameter>dsn</parameter> contains <literal>uid</literal>.
+       If need to connect without specifying a <parameter>user</parameter>,
+       please pass &null;.
       </para>
      </listitem>
     </varlistentry>
@@ -57,6 +60,9 @@
      <listitem>
       <para>
        The password.
+       This parameter is ignored if <parameter>dsn</parameter> contains <literal>pwd</literal>.
+       If need to connect without specifying a <parameter>password</parameter>,
+       please pass &null;.
       </para>
      </listitem>
     </varlistentry>
@@ -101,6 +107,46 @@
   <para>
    Returns an ODBC connection, &return.falseforfailure;.
   </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.4.0</entry>
+      <entry>
+       <parameter>user</parameter> and <parameter>password</parameter> are now nullable
+       and are optional parameters with an initial value of &null;.
+      </entry>
+     </row>
+     <row>
+      <entry>8.4.0</entry>
+      <entry>
+       When passing an empty <type>string</type> to <parameter>password</parameter>, <literal>pwd</literal>
+       was not included in the connection string created until now, but the behavior has been changed to include
+       it as an empty string. Passing &null; for <parameter>password</parameter> results in the same behavior as before.
+      </entry>
+     </row>
+     <row>
+      <entry>8.4.0</entry>
+      <entry>
+       Changed the behavior to ignore <parameter>user</parameter> and <parameter>password</parameter> separately when
+       <parameter>dsn</parameter> contains <literal>uid</literal> or <literal>pwd</literal>.
+       Previously, if included only either <literal>uid</literal> or <literal>pwd</literal> in a <parameter>dsn</parameter>,
+       both <parameter>user</parameter> and <parameter>password</parameter> were ignored.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
  </refsect1>
 
  <refsect1 role="examples">
